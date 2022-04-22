@@ -5,7 +5,6 @@ import javax.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -19,9 +18,9 @@ public class UserData extends BaseEntity{
     @Column(name = "u_password", nullable = false, length = 60)
     private String password;
 
-//    @Column(name = "u_role", nullable = false, length = 60)
-//    private String role;
+    @Column(name = "u_role")
+    private String role;
 
-    @OneToOne(mappedBy = "user",orphanRemoval = true)
+    @OneToOne(mappedBy = "userData",orphanRemoval = true)
     private UserProfile userProfile;
 }

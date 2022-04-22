@@ -4,13 +4,12 @@ import com.rmuti.guidemap.backend.exception.BaseException;
 import com.rmuti.guidemap.backend.exception.FileException;
 import com.rmuti.guidemap.backend.exception.UserException;
 import com.rmuti.guidemap.backend.services.TokenService;
+import com.rmuti.guidemap.backend.services.UserProfileService;
 import com.rmuti.guidemap.backend.services.UserService;
 import com.rmuti.guidemap.backend.table.UserData;
+import com.rmuti.guidemap.backend.table.UserProfile;
 import com.rmuti.guidemap.backend.util.SecurityUtil;
 import lombok.Data;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,11 +23,13 @@ public class UserController {
 
     private final UserService uService;
     private final TokenService tokenService;
+    private final UserProfileService userProfileService;
 
 
-    public UserController(UserService uService, TokenService tokenService) {
+    public UserController(UserService uService, TokenService tokenService, UserProfileService userProfileService) {
         this.uService = uService;
         this.tokenService = tokenService;
+        this.userProfileService = userProfileService;
     }
 
     public String refreshToken() throws BaseException {
@@ -44,7 +45,9 @@ public class UserController {
         }
 
         UserData userData = opt.get();
-        return tokenService.tokenize(userData);
+
+        UserProfile userProfile = userProfileService.getUserProfile(userData);
+        return tokenService.tokenize(userProfile);
     }
 
 
@@ -77,6 +80,7 @@ public class UserController {
 
     }
 
+    //public UserProfile testResponse()
 
 
 }

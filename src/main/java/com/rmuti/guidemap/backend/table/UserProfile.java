@@ -23,5 +23,5 @@ public class UserProfile extends BaseEntity{
 
     @OneToOne
     @JoinColumn(name = "user_data_id")
-    private UserData user;
+    private UserData userData;
 }

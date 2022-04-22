@@ -2,14 +2,17 @@ package com.rmuti.guidemap.backend.api;
 
 import com.rmuti.guidemap.backend.controller.AuthController;
 import com.rmuti.guidemap.backend.exception.BaseException;
+import com.rmuti.guidemap.backend.models.MUserProfileResponse;
 import com.rmuti.guidemap.backend.models.authModels.MAuthResponse;
 import com.rmuti.guidemap.backend.models.authModels.MSignInResponse;
 import com.rmuti.guidemap.backend.models.authModels.MSignUpResponse;
+import com.rmuti.guidemap.backend.table.UserData;
+import com.rmuti.guidemap.backend.table.UserProfile;
+import com.rmuti.guidemap.backend.util.SecurityUtil;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RestController
@@ -38,4 +41,11 @@ public class AuthApi {
         return ResponseEntity.ok(signInService);
     }
 
+    @PostMapping("/test")
+    public ResponseEntity<Object> profileResponse() throws BaseException {
+        String userId = SecurityUtil.getCurrentUserId().get();
+        System.out.printf("token id : "+userId);
+        //UserProfile testRess = authController.testRes1(request);
+        return ResponseEntity.ok(userId);
+    }
 }

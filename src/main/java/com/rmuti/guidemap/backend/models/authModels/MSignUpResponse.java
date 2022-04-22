@@ -11,4 +11,6 @@ public class MSignUpResponse {
 
     private String password;
 
+    //private String passWordAdmin;
+
 }

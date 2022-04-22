@@ -5,6 +5,7 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.rmuti.guidemap.backend.table.UserData;
+import com.rmuti.guidemap.backend.table.UserProfile;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +25,7 @@ public class TokenService {
         return Algorithm.HMAC256(secret);
     }
 
-    public String tokenize(UserData userData){
+    public String tokenize(UserProfile userProfile){
 
 
         Calendar calendar = Calendar.getInstance();
@@ -33,7 +34,7 @@ public class TokenService {
 
        return JWT.create()
                 .withIssuer(issuer)
-                .withClaim("principal",userData.getId())
+                .withClaim("principal",userProfile.getId())
                 .withClaim("role","USER")
                 .withExpiresAt(expiresAt)
                 .sign(algorithm());
@@ -51,4 +52,6 @@ public class TokenService {
         }
 
     }
+
+
 }

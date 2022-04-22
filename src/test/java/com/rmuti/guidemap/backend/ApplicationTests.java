@@ -3,9 +3,11 @@ package com.rmuti.guidemap.backend;
 import com.rmuti.guidemap.backend.exception.BaseException;
 import com.rmuti.guidemap.backend.exception.UserException;
 
+import com.rmuti.guidemap.backend.services.UserProfileService;
 import com.rmuti.guidemap.backend.services.UserService;
 import com.rmuti.guidemap.backend.table.UserData;
 
+import com.rmuti.guidemap.backend.table.UserProfile;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,6 +20,9 @@ class ApplicationTests {
 
 	@Autowired
 	private UserService userService;
+
+	@Autowired
+	private UserProfileService userProfileService;
 
 	@Order(1)
 	@Test
@@ -39,8 +44,21 @@ class ApplicationTests {
 
 
 	}
+	@Order(2)
+	@Test
+	void testUpdate() throws BaseException {
+		Optional<UserData> byEmail = userService.findByEmail(TestCreateData.email);
+		Assertions.assertTrue(byEmail.isPresent());
 
-//	@Order(2)
+		UserData userData = byEmail.get();
+		UserProfile updateName = userProfileService.updateName(userData.getId(), TestUpDateData.name);
+
+		Assertions.assertNotNull(updateName);
+		Assertions.assertEquals(TestUpDateData.name, updateName.getName());
+
+	}
+
+//	@Order(4)
 //	@Test
 //	void testUpdate() throws BaseException {
 //		Optional<UserData> byEmail = userService.findByEmail(TestCreateData.email);

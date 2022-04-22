@@ -2,6 +2,7 @@ package com.rmuti.guidemap.backend.controller;
 
 import com.rmuti.guidemap.backend.exception.AuthException;
 import com.rmuti.guidemap.backend.exception.BaseException;
+import com.rmuti.guidemap.backend.exception.UserException;
 import com.rmuti.guidemap.backend.mapper.UserMapper;
 import com.rmuti.guidemap.backend.models.authModels.MAuthResponse;
 import com.rmuti.guidemap.backend.models.authModels.MSignInResponse;
@@ -10,6 +11,7 @@ import com.rmuti.guidemap.backend.services.TokenService;
 import com.rmuti.guidemap.backend.services.UserProfileService;
 import com.rmuti.guidemap.backend.services.UserService;
 import com.rmuti.guidemap.backend.table.UserData;
+import com.rmuti.guidemap.backend.table.UserProfile;
 import lombok.Data;
 import org.springframework.stereotype.Service;
 
@@ -41,12 +43,19 @@ public class AuthController {
         UserData createUser = userService.createUser(request.getEmail(), request.getPassword());
         //MAuthResponse rAuthResponse = userMapper.toRAuthResponse(createUser);
 
-        //Optional<UserData> byEmail = userService.findByEmail(String.valueOf(rAuthResponse));
-        //UserData userData = byEmail.get();
+//        if(request.passAdmin == app.token.passwordStaff )
+//        {
+//            admin role
+//        }
 
-        //userProfileService.createProfile(userData, request.getName());
+        Optional<UserData> byEmail = userService.findByEmail(createUser.getEmail());
+        if(byEmail.isEmpty()){
+            throw AuthException.signUpFailEmailNull();
+        }
+        UserData userData = byEmail.get();
+        UserProfile createProfile = userProfileService.createProfile(userData, request.getName());
 
-        return "11";
+        return tokenService.tokenize(createProfile);
     }
 
 
@@ -62,8 +71,25 @@ public class AuthController {
             throw AuthException.signInFailPasswordIncorrect();
         }
         //
-        return tokenService.tokenize(userData);
+        UserProfile userProfile = userProfileService.getUserProfile(userData);
+
+        return tokenService.tokenize(userProfile);
 
 
+    }
+
+    public UserProfile testRes1(UserData request) throws BaseException{
+       // UserProfile byUser =
+        //UserProfile userProfile = byUser.
+        return userProfileService.getUserProfile(request);
+    }
+
+    public UserProfile testRes2(UserData request) throws BaseException{
+
+        Optional<UserProfile> byUser = userProfileService.findByUser(request);
+        if (byUser.isEmpty()){
+            throw UserException.userNotFound();
+        }
+        return byUser.get();
     }
 }

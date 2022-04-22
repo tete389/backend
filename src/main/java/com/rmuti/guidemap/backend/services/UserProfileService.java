@@ -8,7 +8,6 @@ import com.rmuti.guidemap.backend.repository.UserRepository;
 import com.rmuti.guidemap.backend.table.UserData;
 import com.rmuti.guidemap.backend.table.UserProfile;
 import lombok.Data;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
@@ -21,19 +20,14 @@ public class UserProfileService {
     //
     private final UserRepository userRepository;
 
-
-    private  final UserProfileRepository userProfileRepository;
+    private final UserProfileRepository userProfileRepository;
 
     public UserProfileService(UserRepository userRepository, UserProfileRepository userProfileRepository) {
         this.userRepository = userRepository;
         this.userProfileRepository = userProfileRepository;
     }
 
-//    public Optional<UserProfile> findByUser(UserData userData){
-//        return userProfileRepository.findByUserData(userData);
-//    }
-
-    public void createProfile(UserData userid, String name) throws BaseException {
+    public UserProfile createProfile(UserData userid, String name) throws BaseException {
 
         /// validate
         if (Objects.isNull(name)) {
@@ -41,9 +35,9 @@ public class UserProfileService {
         }
         /// svae
         UserProfile entity = new UserProfile();
-        entity.setUser(userid);
+        entity.setUserData(userid);
         entity.setName(name);
-        userProfileRepository.save(entity);
+       return userProfileRepository.save(entity);
     }
 
     //
@@ -57,6 +51,18 @@ public class UserProfileService {
         return userProfileRepository.save(userProfile);
     }
 
+    public UserProfile getUserProfile(UserData user) throws BaseException {
+        Optional<UserProfile> opt = userProfileRepository.findByUserData(user);
+        if (opt.isEmpty()){
+            throw UserException.userNotFound();
+        }
+        //UserProfile userProfile =
+        return opt.get();
+    }
+
+    public Optional<UserProfile> findByUser(UserData userData){
+        return userProfileRepository.findByUserData(userData);
+    }
 
     //
     public void deleteById(String id){
