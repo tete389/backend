@@ -2,9 +2,7 @@ package com.rmuti.guidemap.backend.controller;
 
 import com.rmuti.guidemap.backend.exception.AuthException;
 import com.rmuti.guidemap.backend.exception.BaseException;
-import com.rmuti.guidemap.backend.exception.UserException;
 import com.rmuti.guidemap.backend.mapper.UserMapper;
-import com.rmuti.guidemap.backend.models.authModels.MAuthResponse;
 import com.rmuti.guidemap.backend.models.authModels.MSignInResponse;
 import com.rmuti.guidemap.backend.models.authModels.MSignUpResponse;
 import com.rmuti.guidemap.backend.services.TokenService;
@@ -12,6 +10,7 @@ import com.rmuti.guidemap.backend.services.UserProfileService;
 import com.rmuti.guidemap.backend.services.UserService;
 import com.rmuti.guidemap.backend.table.UserData;
 import com.rmuti.guidemap.backend.table.UserProfile;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.stereotype.Service;
 
@@ -27,16 +26,10 @@ public class AuthController {
 
     private final TokenService tokenService;
 
-    private  final UserProfileService userProfileService;
+    private final UserProfileService userProfileService;
 
     private final UserMapper userMapper;
 
-    public AuthController(UserService userService, TokenService tokenService, UserProfileService userProfileService, UserMapper userMapper) {
-        this.userService = userService;
-        this.tokenService = tokenService;
-        this.userProfileService = userProfileService;
-        this.userMapper = userMapper;
-    }
 
     public String signUpService(MSignUpResponse request) throws BaseException {
 
@@ -47,15 +40,14 @@ public class AuthController {
 //        {
 //            admin role
 //        }
-
-        Optional<UserData> byEmail = userService.findByEmail(createUser.getEmail());
-        if(byEmail.isEmpty()){
-            throw AuthException.signUpFailEmailNull();
-        }
-        UserData userData = byEmail.get();
-        UserProfile createProfile = userProfileService.createProfile(userData, request.getName());
-
-        return tokenService.tokenize(createProfile);
+//        Optional<UserData> byEmail = userService.findByEmail(createUser.getEmail());
+//        if(byEmail.isEmpty()){
+//            throw AuthException.signUpFailEmailNull();
+//        }
+//        UserData userData = byEmail.get();
+        UserProfile createProfile = userProfileService.createProfile(createUser, request.getName());
+        //String userProfileId = createProfile.getId();
+        return tokenService.tokenize(createProfile.getId());
     }
 
 
@@ -70,26 +62,24 @@ public class AuthController {
         if (!userService.matchPassword(request.getPassword(), userData.getPassword())) {
             throw AuthException.signInFailPasswordIncorrect();
         }
+
         //
-        UserProfile userProfile = userProfileService.getUserProfile(userData);
-
-        return tokenService.tokenize(userProfile);
-
+       // UserProfile userProfile = userProfileService.getUserProfile(userData);
+        String userProfileId = userProfileService.getUserProfileId(userData.getId());
+        return tokenService.tokenize(userProfileId);
 
     }
 
-    public UserProfile testRes1(UserData request) throws BaseException{
-       // UserProfile byUser =
-        //UserProfile userProfile = byUser.
-        return userProfileService.getUserProfile(request);
-    }
-
-    public UserProfile testRes2(UserData request) throws BaseException{
-
-        Optional<UserProfile> byUser = userProfileService.findByUser(request);
-        if (byUser.isEmpty()){
-            throw UserException.userNotFound();
-        }
-        return byUser.get();
-    }
+//    public UserProfile testRes1(UserData request) throws BaseException{
+//        return userProfileService.getUserProfile(request);
+//    }
+//
+//    public UserProfile testRes2(UserData request) throws BaseException{
+//
+//        Optional<UserProfile> byUser = userProfileService.findByUser(request);
+//        if (byUser.isEmpty()){
+//            throw UserException.userNotFound();
+//        }
+//        return byUser.get();
+//    }
 }

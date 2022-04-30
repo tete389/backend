@@ -16,12 +16,4 @@ public abstract class BaseEntity {
     @Column(length = 36, nullable = false, updatable = false)
     private String Id;
 
-    public String getId() {
-        return Id;
-    }
-
-    public void setId(String id) {
-        Id = id;
-    }
-    
 }

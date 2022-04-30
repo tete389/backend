@@ -9,7 +9,9 @@ import com.rmuti.guidemap.backend.services.UserService;
 import com.rmuti.guidemap.backend.table.UserData;
 import com.rmuti.guidemap.backend.table.UserProfile;
 import com.rmuti.guidemap.backend.util.SecurityUtil;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,20 +19,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-@Data
+@AllArgsConstructor
 @Service
 public class UserController {
 
     private final UserService uService;
     private final TokenService tokenService;
     private final UserProfileService userProfileService;
-
-
-    public UserController(UserService uService, TokenService tokenService, UserProfileService userProfileService) {
-        this.uService = uService;
-        this.tokenService = tokenService;
-        this.userProfileService = userProfileService;
-    }
 
     public String refreshToken() throws BaseException {
         Optional<String> currentUserId = SecurityUtil.getCurrentUserId();
@@ -46,8 +41,9 @@ public class UserController {
 
         UserData userData = opt.get();
 
-        UserProfile userProfile = userProfileService.getUserProfile(userData);
-        return tokenService.tokenize(userProfile);
+        //UserProfile userProfile = userProfileService.getUserProfile(userData);
+        String userProfileId = userProfileService.getUserProfileId(userData.getId());
+        return tokenService.tokenize(userProfileId);
     }
 
 

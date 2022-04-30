@@ -2,6 +2,7 @@ package com.rmuti.guidemap.backend.table;
 
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

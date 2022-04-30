@@ -1,5 +1,6 @@
 package com.rmuti.guidemap.backend.table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -21,7 +22,8 @@ public class UserProfile extends BaseEntity{
     @Column(name = "u_image")
     private File image;
 
-    @OneToOne
-    @JoinColumn(name = "user_data_id")
+    @JsonIgnore
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "fk_user_data_id")
     private UserData userData;
 }

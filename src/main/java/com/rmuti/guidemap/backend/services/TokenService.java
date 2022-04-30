@@ -25,7 +25,8 @@ public class TokenService {
         return Algorithm.HMAC256(secret);
     }
 
-    public String tokenize(UserProfile userProfile){
+    //public String tokenize(UserProfile userProfile)
+    public String tokenize(String userProfile){
 
 
         Calendar calendar = Calendar.getInstance();
@@ -34,7 +35,7 @@ public class TokenService {
 
        return JWT.create()
                 .withIssuer(issuer)
-                .withClaim("principal",userProfile.getId())
+                .withClaim("principal",userProfile)
                 .withClaim("role","USER")
                 .withExpiresAt(expiresAt)
                 .sign(algorithm());

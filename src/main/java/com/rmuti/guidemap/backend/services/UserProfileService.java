@@ -7,13 +7,14 @@ import com.rmuti.guidemap.backend.repository.UserProfileRepository;
 import com.rmuti.guidemap.backend.repository.UserRepository;
 import com.rmuti.guidemap.backend.table.UserData;
 import com.rmuti.guidemap.backend.table.UserProfile;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
 import java.util.Optional;
 
-@Data
+@AllArgsConstructor
 @Service
 public class UserProfileService {
 
@@ -22,12 +23,8 @@ public class UserProfileService {
 
     private final UserProfileRepository userProfileRepository;
 
-    public UserProfileService(UserRepository userRepository, UserProfileRepository userProfileRepository) {
-        this.userRepository = userRepository;
-        this.userProfileRepository = userProfileRepository;
-    }
-
-    public UserProfile createProfile(UserData userid, String name) throws BaseException {
+    //
+    public UserProfile createProfile(UserData user, String name) throws BaseException {
 
         /// validate
         if (Objects.isNull(name)) {
@@ -35,7 +32,7 @@ public class UserProfileService {
         }
         /// svae
         UserProfile entity = new UserProfile();
-        entity.setUserData(userid);
+        entity.setUserData(user);
         entity.setName(name);
        return userProfileRepository.save(entity);
     }
@@ -46,22 +43,30 @@ public class UserProfileService {
         if (opt.isEmpty()){
             throw UserException.userNotFound();
         }
-        UserProfile userProfile = opt.get();
-        userProfile.setName(name);
-        return userProfileRepository.save(userProfile);
+        UserProfile Profile = opt.get();
+        Profile.setName(name);
+        return userProfileRepository.save(Profile);
     }
+    //
+//    public UserProfile getUserProfile(UserData user) throws BaseException {
+//        Optional<UserProfile> opt = userProfileRepository.findByUserData(user);
+//        if (opt.isEmpty()){
+//            throw UserException.userNotFound();
+//        }
+//        return opt.get();
+//    }
+//    //
+//    public Optional<UserProfile> findByUser(UserData userData){
+//        return userProfileRepository.findByUserData(userData);
+//    }
 
-    public UserProfile getUserProfile(UserData user) throws BaseException {
-        Optional<UserProfile> opt = userProfileRepository.findByUserData(user);
+    ////
+    public String getUserProfileId(String userId) throws BaseException {
+        Optional<String> opt = userProfileRepository.findIdProfile(userId);
         if (opt.isEmpty()){
             throw UserException.userNotFound();
         }
-        //UserProfile userProfile =
         return opt.get();
-    }
-
-    public Optional<UserProfile> findByUser(UserData userData){
-        return userProfileRepository.findByUserData(userData);
     }
 
     //

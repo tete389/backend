@@ -44,7 +44,7 @@ public class AuthApi {
     @PostMapping("/test")
     public ResponseEntity<Object> profileResponse() throws BaseException {
         String userId = SecurityUtil.getCurrentUserId().get();
-        System.out.printf("token id : "+userId);
+        System.out.print("token id : "+userId);
         //UserProfile testRess = authController.testRes1(request);
         return ResponseEntity.ok(userId);
     }
