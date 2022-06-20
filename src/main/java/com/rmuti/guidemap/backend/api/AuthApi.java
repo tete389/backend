@@ -1,18 +1,13 @@
 package com.rmuti.guidemap.backend.api;
 
-import com.rmuti.guidemap.backend.controller.AuthController;
+import com.rmuti.guidemap.backend.business.AuthBusiness;
 import com.rmuti.guidemap.backend.exception.BaseException;
-import com.rmuti.guidemap.backend.models.MUserProfileResponse;
-import com.rmuti.guidemap.backend.models.authModels.MAuthResponse;
-import com.rmuti.guidemap.backend.models.authModels.MSignInResponse;
-import com.rmuti.guidemap.backend.models.authModels.MSignUpResponse;
-import com.rmuti.guidemap.backend.table.UserData;
-import com.rmuti.guidemap.backend.table.UserProfile;
+import com.rmuti.guidemap.backend.models.MAuthResponse;
+import com.rmuti.guidemap.backend.models.MLoginRequest;
+import com.rmuti.guidemap.backend.models.MRegisterRequest;
 import com.rmuti.guidemap.backend.util.SecurityUtil;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 
 @RestController
@@ -20,32 +15,38 @@ import java.util.List;
 public class AuthApi {
 
     //
-    private final AuthController authController;
+    private final AuthBusiness authBusiness;
 
-    public AuthApi(AuthController authController) {
-        this.authController = authController;
+    public AuthApi(AuthBusiness authBusiness) {
+        this.authBusiness = authBusiness;
     }
 
     //
-    @PostMapping("/signUp")
-    public ResponseEntity<String> signUp(@RequestBody MSignUpResponse request) throws BaseException {
-        String signUpService = authController.signUpService(request);
-        return ResponseEntity.ok(signUpService);
-        // return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).build();
-
+    @PostMapping("/register")
+    public ResponseEntity<MAuthResponse> register(@RequestBody MRegisterRequest request) throws BaseException {
+        MAuthResponse registerResponse = authBusiness.register(request);
+        return ResponseEntity.ok(registerResponse);
     }
 
-    @PostMapping("/signIn")
-    public ResponseEntity<String> signIn(@RequestBody MSignInResponse request) throws BaseException {
-        String signInService = authController.signInService(request);
-        return ResponseEntity.ok(signInService);
+    @PostMapping("/login")
+    public ResponseEntity<MAuthResponse> login(@RequestBody MLoginRequest request) throws BaseException {
+        MAuthResponse loginResponse = authBusiness.login(request);
+        return ResponseEntity.ok(loginResponse);
     }
 
-    @PostMapping("/test")
-    public ResponseEntity<Object> profileResponse() throws BaseException {
-        String userId = SecurityUtil.getCurrentUserId().get();
-        System.out.print("token id : "+userId);
-        //UserProfile testRess = authController.testRes1(request);
-        return ResponseEntity.ok(userId);
+    @PostMapping("/loginGoogle")
+    public ResponseEntity<MAuthResponse> loginGoogle(@RequestBody MLoginRequest request) throws BaseException {
+        MAuthResponse loginResponse = authBusiness.loginGoogle(request);
+        return ResponseEntity.ok(loginResponse);
     }
+
+//    @PostMapping("/test")
+//    public ResponseEntity<Object> profileResponse() throws BaseException {
+//        String userId = SecurityUtil.getCurrentUserId().get();
+//        System.out.print("token id : "+userId);
+//        //UserProfile testRess = authController.testRes1(request);
+//        return ResponseEntity.ok(userId);
+//    }
+
+
 }

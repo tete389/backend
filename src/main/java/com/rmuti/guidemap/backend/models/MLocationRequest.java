@@ -15,7 +15,7 @@ public class MLocationRequest {
 
     private double longitude;
 
-    private File image;
+    private String image;
 
     private String detail;
 

@@ -33,6 +33,11 @@ public class AuthException extends BaseException{
         return new AuthException("sign_up.email.null");
     }
 
+    public static AuthException signUpFailProfileNull() {
+
+        return new AuthException("sign_up.profile.null");
+    }
+
     public static AuthException signUpFailPasswordNull() {
 
         return new AuthException("sign_up.fail.password.null");

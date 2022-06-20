@@ -1,9 +1,9 @@
-package com.rmuti.guidemap.backend.models.authModels;
+package com.rmuti.guidemap.backend.models;
 
 import lombok.Data;
 
 @Data
-public class MSignUpResponse {
+public class MRegisterRequest {
 
     private String name;
 

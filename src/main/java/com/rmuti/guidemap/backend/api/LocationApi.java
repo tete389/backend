@@ -1,62 +1,57 @@
 package com.rmuti.guidemap.backend.api;
 
-import com.rmuti.guidemap.backend.controller.LocationController;
+import com.rmuti.guidemap.backend.business.ImageDataBusiness;
+import com.rmuti.guidemap.backend.business.LocationDataBusiness;
 import com.rmuti.guidemap.backend.exception.BaseException;
 import com.rmuti.guidemap.backend.models.MLocationRequest;
-import com.rmuti.guidemap.backend.table.Location;
+import com.rmuti.guidemap.backend.models.MLocationResponse;
+import com.rmuti.guidemap.backend.table.LocationData;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 
 @RestController
-@RequestMapping("/build")
+@AllArgsConstructor
+@RequestMapping("/location")
 public class LocationApi {
 
     //
-    private final LocationController locationController;
+    private final LocationDataBusiness locationBusiness;
 
-    public LocationApi(LocationController locationController) {
-        this.locationController = locationController;
-    }
+    private final ImageDataBusiness imageDataBusiness;
+
 
     //
     @PostMapping("/createLocation")
-    public ResponseEntity<Location> createLocation(@RequestBody MLocationRequest request) throws BaseException {
-        Location locationData = locationController.createLocation(request);
+    public ResponseEntity<String> createLocation(@RequestBody LocationData request) throws BaseException {
+        String locationData = locationBusiness.createLocation(request);
         return ResponseEntity.ok(locationData);
         // return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).build();
     }
 
     @GetMapping("/getLocation")
-    public List<Location> getLocation() throws BaseException {
-        return locationController.getLocation();
+    public ResponseEntity<MLocationResponse> getLocation() throws BaseException {
+        MLocationResponse res = locationBusiness.getLocation();
+        return ResponseEntity.ok(res);
     }
 
-//    @GetMapping("/getLocation2")
-//    public ResponseEntity<Location> getLocation() throws BaseException {
-//        return ResponseEntity.ok();
-//    }
 
     @PostMapping("/updateLocation")
-    public ResponseEntity<Location> createLocation(@RequestBody Location request) throws BaseException {
-        Location locationData = locationController.updateLocation(request);
+    public ResponseEntity<String> updateLocation(@RequestBody LocationData request) throws BaseException {
+        String locationData = locationBusiness.updateLocation(request);
         return ResponseEntity.ok(locationData);
+    }
+
+    @PostMapping("/uploadLocationImage")
+    public ResponseEntity<String> uploadLocationImage(@RequestPart MultipartFile file, @RequestPart LocationData request) throws BaseException, IOException {
+        String response = imageDataBusiness.uploadImageLocation(file , request);
+        return ResponseEntity.ok(response);
         // return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).build();
     }
 
-//    @PostMapping("/signIn")
-//    public ResponseEntity<String> signIn(@RequestBody MSignInResponse request) throws BaseException {
-//        String signInService = buildingComtroller.signInService(request);
-//        return ResponseEntity.ok(signInService);
-//    }
-//
-//    @PostMapping("/test")
-//    public ResponseEntity<Object> profileResponse() throws BaseException {
-//        String userId = SecurityUtil.getCurrentUserId().get();
-//        System.out.print("token id : "+userId);
-//        //UserProfile testRess = authController.testRes1(request);
-//        return ResponseEntity.ok(userId);
-//    }
 }

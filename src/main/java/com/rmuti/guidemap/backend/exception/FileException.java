@@ -18,7 +18,7 @@ public class FileException extends BaseException{
 
      // check file no support
      public static FileException fileUnSupport() {
-        return new FileException("flie.can't.supportType"); 
+        return new FileException("file.can't.supportType");
     }
     
     

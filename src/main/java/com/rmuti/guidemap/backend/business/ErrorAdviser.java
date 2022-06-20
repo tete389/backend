@@ -1,4 +1,4 @@
-package com.rmuti.guidemap.backend.controller;
+package com.rmuti.guidemap.backend.business;
 
 import java.time.LocalDateTime;
 

@@ -26,7 +26,14 @@ public class SecurityUtil {
             return Optional.empty();
         }
 
+        Object role = authentication.getAuthorities().toString();
+        if (role.equals("[ADMIN]")){
+            return Optional.of("Admin");
+        }
+
         String userId = (String) principal;
         return Optional.of(userId);
     }
+
+
 }

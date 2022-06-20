@@ -5,15 +5,17 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-public class ChatMessage {
+public class MChatMessage {
 
-    private String from;
+    private String sender;
+
+    private String roomName;
 
     private String message;
 
     private Date created;
 
-    public ChatMessage() {
+    public MChatMessage() {
         created = new Date();
     }
 }

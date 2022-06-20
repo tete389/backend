@@ -4,13 +4,12 @@ import com.rmuti.guidemap.backend.exception.AuthException;
 import com.rmuti.guidemap.backend.exception.BaseException;
 import com.rmuti.guidemap.backend.exception.UserException;
 import com.rmuti.guidemap.backend.repository.UserProfileRepository;
-import com.rmuti.guidemap.backend.repository.UserRepository;
-import com.rmuti.guidemap.backend.table.UserData;
+import com.rmuti.guidemap.backend.repository.UserDataRepository;
 import com.rmuti.guidemap.backend.table.UserProfile;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -19,54 +18,53 @@ import java.util.Optional;
 public class UserProfileService {
 
     //
-    private final UserRepository userRepository;
+    private final UserDataRepository userRepository;
 
     private final UserProfileRepository userProfileRepository;
 
     //
-    public UserProfile createProfile(UserData user, String name) throws BaseException {
+    public List<UserProfile> findAllUserProfile(){
+        return userProfileRepository.findAll();
+    }
+
+    //
+    public Optional<UserProfile> findUserProfileById(String id){
+        return userProfileRepository.findById(id);
+    }
+
+    public UserProfile createProfile(String UpName) throws BaseException {
 
         /// validate
-        if (Objects.isNull(name)) {
+        if (Objects.isNull(UpName)) {
             throw AuthException.signUpFailNameNull();
         }
-        /// svae
+        /// save
         UserProfile entity = new UserProfile();
-        entity.setUserData(user);
-        entity.setName(name);
+        entity.setUpStatus("No Data");
+        entity.setUpImage("No Data");
+        entity.setUpName(UpName);
        return userProfileRepository.save(entity);
     }
 
     //
-    public UserProfile updateName(String id, String name) throws BaseException {
+    public String updateUserProfile(String id, String name, String status, String image) throws BaseException {
         Optional<UserProfile> opt = userProfileRepository.findById(id);
         if (opt.isEmpty()){
             throw UserException.userNotFound();
         }
-        UserProfile Profile = opt.get();
-        Profile.setName(name);
-        return userProfileRepository.save(Profile);
-    }
-    //
-//    public UserProfile getUserProfile(UserData user) throws BaseException {
-//        Optional<UserProfile> opt = userProfileRepository.findByUserData(user);
-//        if (opt.isEmpty()){
-//            throw UserException.userNotFound();
-//        }
-//        return opt.get();
-//    }
-//    //
-//    public Optional<UserProfile> findByUser(UserData userData){
-//        return userProfileRepository.findByUserData(userData);
-//    }
+        UserProfile profile = opt.get();
 
-    ////
-    public String getUserProfileId(String userId) throws BaseException {
-        Optional<String> opt = userProfileRepository.findIdProfile(userId);
-        if (opt.isEmpty()){
-            throw UserException.userNotFound();
-        }
-        return opt.get();
+        /// validate
+        if (name.isEmpty()) name = profile.getUpName();
+        if (status.isEmpty()) status = profile.getUpStatus();
+        if (image.isEmpty()) image = profile.getUpImage();
+
+        /// update
+        profile.setUpName(name);
+        profile.setUpStatus(status);
+        profile.setUpImage(image);
+        userProfileRepository.save(profile);
+        return "update user.profile complied";
     }
 
     //

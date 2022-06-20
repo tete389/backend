@@ -1,22 +1,15 @@
 package com.rmuti.guidemap.backend.models;
 
+import com.rmuti.guidemap.backend.table.LocationData;
 import lombok.Data;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 public class MLocationResponse {
     
-    private String title;
-
-    private String address;
-
-    private double latitude;
-
-    private double longitude;
-
-    private File image;
-
-    private String detail;
+    private List<LocationData> result = new ArrayList<>();
 
 }

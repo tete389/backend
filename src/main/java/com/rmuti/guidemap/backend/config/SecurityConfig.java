@@ -21,15 +21,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final TokenService tokenService;
 
     private final String[] PUBIC = {
-            "/auth/signUp",
-            "/auth/signIn",
+            "/auth/login",
+            "/auth/register",
             "/auth/test",
-            "/socket"
+            "/socket/*",
+            "/upload/**"
     };
 
     public SecurityConfig(TokenService tokenService) {
         this.tokenService = tokenService;
-
     }
 
     @Bean
@@ -37,11 +37,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        // TODO Auto-generated method stub
-        super.configure(auth);
-    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -51,20 +46,4 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and().apply(new TokenFilterConfiguerer(tokenService));
     }
 
-    @Bean
-    public CorsFilter corsFilter(){
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowCredentials(true);
-        // TODO FOR FLUTTER
-        configuration.addAllowedOrigin("http://localhost:4200");
-        configuration.addAllowedHeader("*");
-        configuration.addAllowedMethod("OPTION");
-        configuration.addAllowedMethod("POST");
-        configuration.addAllowedMethod("GET");
-        configuration.addAllowedMethod("PUT");
-        configuration.addAllowedMethod("DELETE");
-        source.registerCorsConfiguration("/**",configuration);
-        return new CorsFilter(source);
-    }
 }

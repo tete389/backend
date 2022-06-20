@@ -3,12 +3,8 @@ package com.rmuti.guidemap.backend.models;
 import com.rmuti.guidemap.backend.table.UserData;
 import lombok.Data;
 
-import java.io.File;
-
 @Data
-public class MUserProfileResponse {
-
-    private String profileId;
+public class MUserProfileRequest {
     
     private String name;
 
@@ -16,7 +12,4 @@ public class MUserProfileResponse {
 
     private String image;
 
-    //private UserData user;
-
-  
 }
