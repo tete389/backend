@@ -2,7 +2,7 @@ package com.rmuti.guidemap.backend.business;
 
 
 import com.rmuti.guidemap.backend.exception.*;
-import com.rmuti.guidemap.backend.models.MLocationRequest;
+//import com.rmuti.guidemap.backend.models.MLocationRequest;
 import com.rmuti.guidemap.backend.models.MLocationResponse;
 import com.rmuti.guidemap.backend.services.LocationDataService;
 import com.rmuti.guidemap.backend.services.TokenService;

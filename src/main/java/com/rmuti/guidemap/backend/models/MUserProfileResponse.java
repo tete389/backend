@@ -1,22 +1,14 @@
 package com.rmuti.guidemap.backend.models;
 
-import com.rmuti.guidemap.backend.table.UserData;
+import com.rmuti.guidemap.backend.table.UserProfile;
 import lombok.Data;
 
-import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 public class MUserProfileResponse {
 
-    private String profileId;
-    
-    private String name;
+    private List<UserProfile> result = new ArrayList<>();
 
-    private String status;
-
-    private String image;
-
-    //private UserData user;
-
-  
 }

@@ -7,6 +7,7 @@ import java.util.Optional;
 import com.rmuti.guidemap.backend.exception.AuthException;
 import com.rmuti.guidemap.backend.exception.BaseException;
 
+import com.rmuti.guidemap.backend.models.MUserDataResponse;
 import com.rmuti.guidemap.backend.repository.UserDataRepository;
 import com.rmuti.guidemap.backend.table.UserData;
 
@@ -40,8 +41,10 @@ public class UserDataService {
         return userRepository.findAll();
     }
 
-    public Optional<UserDataRepository.UserDataResponse> findUserById(String id){
-        return userRepository.findByUserProfileId(id);
+    public MUserDataResponse findUserById(String id){
+        MUserDataResponse response = new MUserDataResponse();
+        response.setResult(userRepository.findByUserProfileId(id));
+        return response;
     }
 
     public boolean matchPassword(String rawPassword, String encodedPassword){

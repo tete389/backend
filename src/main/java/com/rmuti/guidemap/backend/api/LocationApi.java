@@ -3,7 +3,7 @@ package com.rmuti.guidemap.backend.api;
 import com.rmuti.guidemap.backend.business.ImageDataBusiness;
 import com.rmuti.guidemap.backend.business.LocationDataBusiness;
 import com.rmuti.guidemap.backend.exception.BaseException;
-import com.rmuti.guidemap.backend.models.MLocationRequest;
+//import com.rmuti.guidemap.backend.models.MLocationRequest;
 import com.rmuti.guidemap.backend.models.MLocationResponse;
 import com.rmuti.guidemap.backend.table.LocationData;
 import lombok.AllArgsConstructor;

@@ -5,11 +5,7 @@ import lombok.Data;
 
 @Data
 public class MUserDataResponse {
-    
-    private String email;
 
-    private String role;
-
-    private String userProfile;
+    private Object result;
 
 }

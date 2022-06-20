@@ -3,6 +3,7 @@ package com.rmuti.guidemap.backend.services;
 import com.rmuti.guidemap.backend.exception.AuthException;
 import com.rmuti.guidemap.backend.exception.BaseException;
 import com.rmuti.guidemap.backend.exception.UserException;
+import com.rmuti.guidemap.backend.models.MUserProfileResponse;
 import com.rmuti.guidemap.backend.repository.UserProfileRepository;
 import com.rmuti.guidemap.backend.repository.UserDataRepository;
 import com.rmuti.guidemap.backend.table.UserProfile;
@@ -23,8 +24,10 @@ public class UserProfileService {
     private final UserProfileRepository userProfileRepository;
 
     //
-    public List<UserProfile> findAllUserProfile(){
-        return userProfileRepository.findAll();
+    public MUserProfileResponse findAllUserProfile(){
+        MUserProfileResponse response = new MUserProfileResponse();
+        response.getResult().addAll(userProfileRepository.findAll());
+        return response;
     }
 
     //

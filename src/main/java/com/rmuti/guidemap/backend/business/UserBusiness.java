@@ -1,7 +1,8 @@
 package com.rmuti.guidemap.backend.business;
 
 import com.rmuti.guidemap.backend.exception.*;
-import com.rmuti.guidemap.backend.models.MUserProfileRequest;
+import com.rmuti.guidemap.backend.models.MUserDataResponse;
+import com.rmuti.guidemap.backend.models.MUserProfileResponse;
 import com.rmuti.guidemap.backend.repository.UserDataRepository;
 import com.rmuti.guidemap.backend.services.TokenService;
 import com.rmuti.guidemap.backend.services.UserProfileService;
@@ -29,18 +30,18 @@ public class UserBusiness {
     }
 
 
-    public String updateUserProfile(MUserProfileRequest request) throws BaseException{
+    public String updateUserProfile(UserProfile request) throws BaseException{
         UserProfile resToken = tokenService.checkTokenUser();
 
         return userProfileService.updateUserProfile(
                 resToken.getUpId(),
-                request.getName(),
-                request.getStatus(),
-                request.getImage()
+                request.getUpName(),
+                request.getUpStatus(),
+                request.getUpImage()
         );
     }
 
-    public List<UserProfile> getAllUserProfile() throws BaseException{
+    public MUserProfileResponse getAllUserProfile() throws BaseException{
         UserProfile resToken = tokenService.checkTokenUser();
         return userProfileService.findAllUserProfile();
     }
@@ -49,14 +50,14 @@ public class UserBusiness {
         return tokenService.checkTokenUser();
     }
 
-    public UserDataRepository.UserDataResponse getUserDataCurrent() throws BaseException{
+    public MUserDataResponse getUserDataCurrent() throws BaseException{
         UserProfile resToken = tokenService.checkTokenUser();
 
-        Optional<UserDataRepository.UserDataResponse> byIdUserProfile = uService.findUserById(resToken.getUpId());
-        if (byIdUserProfile.isEmpty()) {
+        MUserDataResponse byIdUserProfile = uService.findUserById(resToken.getUpId());
+        if (byIdUserProfile == null) {
             throw AuthException.signInFailEmailNotFound();
         }
-        return byIdUserProfile.get();
+        return byIdUserProfile;
     }
 
 }
