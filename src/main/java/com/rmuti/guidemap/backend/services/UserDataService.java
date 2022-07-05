@@ -69,11 +69,11 @@ public class UserDataService {
 
         /// save
         UserData entity = new UserData();
-        entity.setUserProfileId(userProfile);
+        entity.setUdUserProfileId(userProfile);
         entity.setUdEmail(email);
         entity.setUdGoogleEmail("non : "+email);
         entity.setUdPassword(passwordEncoder.encode(password));
-        entity.setUpRole("user");
+        entity.setUdRole("user");
         return userRepository.save(entity);
     }
 
@@ -96,11 +96,11 @@ public class UserDataService {
 
         /// save
         UserData entity = new UserData();
-        entity.setUserProfileId(userProfile);
+        entity.setUdUserProfileId(userProfile);
         entity.setUdEmail("non : "+googleEmail);
         entity.setUdGoogleEmail(googleEmail);
         entity.setUdPassword(passwordEncoder.encode(password));
-        entity.setUpRole("user");
+        entity.setUdRole("user");
         return userRepository.save(entity);
     }
 

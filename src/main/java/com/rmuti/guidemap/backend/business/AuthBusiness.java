@@ -59,7 +59,7 @@ public class AuthBusiness {
         checkPassword(request.getPassword(),userData.getUdPassword());
 
         //
-        Optional<UserProfile> userProfileId = userProfileService.findUserProfileById(userData.getUserProfileId());
+        Optional<UserProfile> userProfileId = userProfileService.findUserProfileById(userData.getUdUserProfileId());
         if (userProfileId.isEmpty()) {
             throw AuthException.signUpFailEmailNull();
         }
@@ -95,7 +95,7 @@ public class AuthBusiness {
         UserData userData = byGoogleEmail.get();
         checkPassword(request.getPassword(), userData.getUdPassword());
 
-        Optional<UserProfile> userProfileId = userProfileService.findUserProfileById(userData.getUserProfileId());
+        Optional<UserProfile> userProfileId = userProfileService.findUserProfileById(userData.getUdUserProfileId());
         if (userProfileId.isEmpty()) {
             throw AuthException.signUpFailEmailNull();
         }
@@ -109,5 +109,6 @@ public class AuthBusiness {
             throw AuthException.signInFailPasswordIncorrect();
         }
     }
+
 
 }

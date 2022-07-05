@@ -24,6 +24,7 @@ public class UserBusiness {
 
     public String refreshToken() throws BaseException {
         UserProfile resToken = tokenService.checkTokenUser();
+        System.out.println(resToken);
         //UserProfile user = userProfileService.getUserProfile(userData);
         String userProfileId = resToken.getUpId();
         return tokenService.tokenize(userProfileId);

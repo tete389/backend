@@ -29,10 +29,10 @@ public class UserData {
     private String udPassword;
 
     @Column(name = "ud_role")
-    private String upRole;
+    private String udRole;
 
     @Column(name = "ud_user_profile_id")
-    private String userProfileId;
+    private String udUserProfileId;
 
 //    @OneToOne(cascade = CascadeType.ALL)
 //    @JoinColumn(name = "fk_user_profile", referencedColumnName = "id")

@@ -14,10 +14,12 @@ public class SecurityUtil {
 
     public static Optional<String> getCurrentUserId(){
         SecurityContext context = SecurityContextHolder.getContext();
+
         if (context == null){
             return Optional.empty();
         }
         Authentication authentication = context.getAuthentication();
+
         if (authentication == null){
             return Optional.empty();
         }

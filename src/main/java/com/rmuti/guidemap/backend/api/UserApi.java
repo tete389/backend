@@ -5,7 +5,6 @@ import com.rmuti.guidemap.backend.business.UserBusiness;
 import com.rmuti.guidemap.backend.exception.BaseException;
 import com.rmuti.guidemap.backend.models.MUserDataResponse;
 import com.rmuti.guidemap.backend.models.MUserProfileResponse;
-import com.rmuti.guidemap.backend.repository.UserDataRepository;
 import com.rmuti.guidemap.backend.table.UserProfile;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
 
 
 @RestController
@@ -57,7 +55,7 @@ public class UserApi {
     }
 
     //
-    @PostMapping("/uploadUserProfileImage")
+    @PostMapping("/uploadImageUserProfile")
     public ResponseEntity<String> uploadImageUserProfile(@RequestPart MultipartFile file) throws BaseException, IOException {
         String response = imageDataBusiness.uploadImageUserProfile(file);
         return ResponseEntity.ok(response);

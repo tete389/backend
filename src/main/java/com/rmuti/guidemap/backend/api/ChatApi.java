@@ -6,6 +6,7 @@ import com.rmuti.guidemap.backend.business.ImageDataBusiness;
 import com.rmuti.guidemap.backend.exception.BaseException;
 import com.rmuti.guidemap.backend.models.*;
 import com.rmuti.guidemap.backend.table.ChatRoom;
+import com.rmuti.guidemap.backend.table.LocationData;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,7 +14,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 
 @RestController
@@ -44,17 +44,10 @@ public class ChatApi {
     }
 
     @PostMapping("/getChatRoomsByLocation")
-    public ResponseEntity<MChatRoomResponse> getChatRoomInLocationId(@RequestBody MChatRoomRequest request) throws BaseException {
-        MChatRoomResponse res = chatRoomBusiness.getChatRoomsByLocationId(request.getLocationId());
+    public ResponseEntity<MChatRoomResponse> getChatRoomInLocationId(@RequestBody List<MChatRoomRequest> crLocationId) throws BaseException {
+        MChatRoomResponse res = chatRoomBusiness.getChatRoomsByLocationId(crLocationId);
         return ResponseEntity.ok(res);
     }
-
-    @PostMapping("/getChatRoomsByName")
-    public ResponseEntity<ChatRoom> getChatRoomByName(@RequestBody MChatRoomRequest request) throws BaseException {
-        ChatRoom res = chatRoomBusiness.getChatRoomByName(request.getCrName());
-        return ResponseEntity.ok(res);
-    }
-
 
     @PostMapping("/updateChatRoom")
     public ResponseEntity<String> updateChatRoom(@RequestBody MChatRoomRequest request) throws BaseException {
@@ -62,34 +55,46 @@ public class ChatApi {
         return ResponseEntity.ok(chatRoom);
     }
 
+    @PostMapping("/uploadImageChatRoom")
+    public ResponseEntity<String> uploadLocationImage(@RequestPart MultipartFile file, @RequestPart String chatRoomId) throws BaseException, IOException {
+        String response = imageDataBusiness.uploadImageChatRoom(file , chatRoomId);
+        return ResponseEntity.ok(response);
+        // return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).build();
+    }
 
-    @PostMapping("/deleteChatRoom")
-    public ResponseEntity<String> deleteChatRoom(@RequestBody MChatRoomRequest request) throws BaseException {
-        String messageCompiled = chatRoomBusiness.delChatRoomByName(request);
+    @PostMapping("/deleteChatRoomById")
+    public ResponseEntity<String> deleteChatRoomById(@RequestBody MChatRoomRequest chatRoomId) throws BaseException {
+        String messageCompiled = chatRoomBusiness.delChatRoomById(chatRoomId.getCrId());
         return ResponseEntity.ok(messageCompiled);
     }
 
-    @PostMapping("/saveMessage")
+    @PostMapping("/deleteChatRoomByLocation")
+    public ResponseEntity<String> deleteChatRoomByLocation(@RequestBody MChatRoomRequest crLocationId) throws BaseException {
+        String messageCompiled = chatRoomBusiness.delChatRoomByLocation(crLocationId.getCrLocationId());
+        return ResponseEntity.ok(messageCompiled);
+    }
+
+    @PostMapping("/saveMessageToChatRoom")
     public ResponseEntity<String> createChatMessage(@RequestBody MChatMessageRequest request) throws BaseException {
-        String messageCompiled = chatMessageBusiness.createChatMessage(request);
+        String messageCompiled = chatMessageBusiness.sendChatMessage(request);
         return ResponseEntity.ok(messageCompiled);
     }
 
-    @PostMapping("/getMessage")
-    public ResponseEntity<MChatMessageResponse> getMessageByChatRoomId(@RequestBody MChatRoomRequest request) throws BaseException {
-        MChatMessageResponse res = chatMessageBusiness.getChatMessageByChatRoomId(request);
+    @PostMapping("/getMessageByChatRoom")
+    public ResponseEntity<MChatMessageResponse> getMessageByChatRoomId(@RequestBody MChatRoomRequest chatRoomId) throws BaseException {
+        MChatMessageResponse res = chatMessageBusiness.getChatMessageByChatRoomId(chatRoomId.getCrId());
         return ResponseEntity.ok(res);
     }
 
-    @PostMapping("/deleteMessage")
+    @PostMapping("/deleteMessageInChatRoom")
     public ResponseEntity<String> deleteChatMessage(@RequestBody MChatMessageDeleteRequest request) throws BaseException {
-        String messageCompiled = chatMessageBusiness.deleteChatMessageById(request);
+        String messageCompiled = chatMessageBusiness.deleteChatMessage(request);
         return ResponseEntity.ok(messageCompiled);
     }
 
-    @PostMapping("/uploadChatMessageImage")
-    public ResponseEntity<String> uploadChatMessageImage(@RequestPart MultipartFile file, @RequestPart MChatMessageRequest request) throws BaseException, IOException {
-        String response = imageDataBusiness.uploadImageChatMessage(file , request);
+    @PostMapping("/sendImageMessageToChatRoom")
+    public ResponseEntity<String> sendMessageImage(@RequestPart MultipartFile file, @RequestPart String chatRoomId) throws BaseException, IOException {
+        String response = imageDataBusiness.sendMessageImage(file , chatRoomId);
         return ResponseEntity.ok(response);
         // return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).build();
     }

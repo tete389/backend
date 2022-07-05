@@ -7,7 +7,6 @@ import com.rmuti.guidemap.backend.models.MChatMessageRequest;
 import com.rmuti.guidemap.backend.models.MChatMessageDeleteRequest;
 import com.rmuti.guidemap.backend.models.MChatMessageResponse;
 import com.rmuti.guidemap.backend.models.MChatRoomRequest;
-import com.rmuti.guidemap.backend.repository.ChatMessageRepository;
 import com.rmuti.guidemap.backend.services.ChatMessageService;
 import com.rmuti.guidemap.backend.services.TokenService;
 import com.rmuti.guidemap.backend.table.ChatMessage;
@@ -15,7 +14,6 @@ import com.rmuti.guidemap.backend.table.UserProfile;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @AllArgsConstructor
@@ -28,13 +26,13 @@ public class ChatMessageBusiness {
 
 
     ///
-    public String createChatMessage(MChatMessageRequest request) throws BaseException {
+    public String sendChatMessage(MChatMessageRequest request) throws BaseException {
         UserProfile resToken = tokenService.checkTokenUser();
 
         ChatMessage cmRes = chatMessageService.createChatMessage(
                 resToken.getUpId(),
-                request.getReceiver(),
-                request.getMessage()
+                request.getCmReceiver(),
+                request.getCmMessage()
         );
         Optional<ChatMessage> opt = chatMessageService.findById(cmRes.getCmId());
         if(opt.isEmpty()){
@@ -44,10 +42,10 @@ public class ChatMessageBusiness {
     }
 
     ///
-    public MChatMessageResponse getChatMessageByChatRoomId(MChatRoomRequest request) throws BaseException{
+    public MChatMessageResponse getChatMessageByChatRoomId(String chatRoomId) throws BaseException{
         UserProfile resToken = tokenService.checkTokenUser();
 
-        MChatMessageResponse chatMessages = chatMessageService.findMessageByChatRoomId(request.getCrId());
+        MChatMessageResponse chatMessages = chatMessageService.findMessageByChatRoomId(chatRoomId);
         if(chatMessages == null){
             throw ChatException.messageNotFound();
         }
@@ -55,13 +53,12 @@ public class ChatMessageBusiness {
     }
 
     ///
-    public String deleteChatMessageById(MChatMessageDeleteRequest request) throws BaseException{
+    public String deleteChatMessage(MChatMessageDeleteRequest request) throws BaseException{
         UserProfile resToken = tokenService.checkTokenUser();
 
         ChatMessage res =  chatMessageService.deleteChatMessageById(
-                request.getId(),
-                request.getCreated(),
-                request.getReceiver()
+                request.getCmId(),
+                request.getCmReceiver()
         );
         Optional<ChatMessage> opt = chatMessageService.findById(res.getCmId());
         if(opt.isEmpty()){
@@ -71,5 +68,17 @@ public class ChatMessageBusiness {
             throw ChatException.deleteFail();
         }
         return "Message is Deleted";
+    }
+
+    ///
+    public void deleteChatMessageByChatRoom(String chatRoomId) throws BaseException{
+        UserProfile resToken = tokenService.checkTokenUser();
+
+        String res =  chatMessageService.deleteAllChatMessageByChatRoom(chatRoomId);
+
+        if(res.isEmpty()){
+            throw ChatException.deleteFail();
+        }
+
     }
 }

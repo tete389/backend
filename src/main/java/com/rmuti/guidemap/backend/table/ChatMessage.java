@@ -37,10 +37,10 @@ public class ChatMessage {
     private String cmImage;
 
     @Column(name = "cm_user_profile_id", nullable = false)
-    private String userProfileId;
+    private String cmUserProfileId;
 
     @Column(name = "cm_chat_room_id", nullable = false)
-    private String chatRoomId;
+    private String cmChatRoomId;
 
 //    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 //    @JoinTable(

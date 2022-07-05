@@ -1,6 +1,7 @@
 package com.rmuti.guidemap.backend.services;
 
 import com.rmuti.guidemap.backend.exception.BaseException;
+import com.rmuti.guidemap.backend.exception.ChatException;
 import com.rmuti.guidemap.backend.exception.LocationException;
 import com.rmuti.guidemap.backend.models.MLocationResponse;
 import com.rmuti.guidemap.backend.repository.LocationDataRepository;
@@ -25,6 +26,19 @@ public class LocationDataService {
         MLocationResponse res = new MLocationResponse();
         res.getResult().addAll(locationRepository.findAll());
         return res;
+    }
+//
+//    public List<LocationData> findAllLocation(){
+//    return locationRepository.findAll();
+//}
+    //
+    public String deleteLocationById(String locationId) throws BaseException{
+        if (Objects.isNull(locationId)) {
+            throw LocationException.locationFailDataNull();
+        }
+        locationRepository.deleteById(locationId);
+
+        return "delete Location ById Success";
     }
 
     //
@@ -98,7 +112,9 @@ public class LocationDataService {
 
         /// verify
         if (locationRepository.existsByLdName(name)) {
-            throw LocationException.locationFailDuplicated();
+            if(!res.getLdName().equals(name)) {
+                throw LocationException.locationFailDuplicated();
+            }
         }
         if(Objects.isNull(name)) {
             name = res.getLdName();

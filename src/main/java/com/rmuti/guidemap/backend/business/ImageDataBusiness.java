@@ -4,6 +4,7 @@ package com.rmuti.guidemap.backend.business;
 import com.rmuti.guidemap.backend.exception.*;
 import com.rmuti.guidemap.backend.models.MChatMessageRequest;
 import com.rmuti.guidemap.backend.services.*;
+import com.rmuti.guidemap.backend.table.ChatRoom;
 import com.rmuti.guidemap.backend.table.LocationData;
 import com.rmuti.guidemap.backend.table.UserProfile;
 import com.rmuti.guidemap.backend.util.FilesUtil;
@@ -26,10 +27,13 @@ public class ImageDataBusiness {
 
     private final LocationDataService locationDataService;
 
+    private final ChatRoomService chatRoomService;
+
     private final TokenService tokenService;
 
     public static String uploadDirectory = System.getProperty("user.dir");
 
+    ///
     public String uploadImageUserProfile(MultipartFile file) throws BaseException {
         UserProfile resToken = tokenService.checkTokenUser();
 
@@ -44,8 +48,8 @@ public class ImageDataBusiness {
         return imageDataService.createImageUserProfile(pathUserUrl, imgName, resToken);
     }
 
-
-    public String uploadImageChatMessage(MultipartFile file, MChatMessageRequest request) throws BaseException {
+    ///
+    public String sendMessageImage(MultipartFile file, String chatRoomId) throws BaseException {
         UserProfile resToken = tokenService.checkTokenUser();
 
         String pathSet = FilesUtil.pathSet;
@@ -57,20 +61,19 @@ public class ImageDataBusiness {
 
         return imageDataService.createImageChatMessage(
                 resToken.getUpId(),
-                request.getReceiver(),
+                chatRoomId,
                 imgName,
-                pathChatMessageUrl
-                );
+                pathChatMessageUrl);
     }
 
-
-    public String uploadImageLocation(MultipartFile file, LocationData request) throws BaseException {
+    ///
+    public String uploadImageLocation(MultipartFile file, String locationId) throws BaseException {
         if (!tokenService.checkAdmin()){
             throw UserException.accessDenied();
         }
         UserProfile resToken = tokenService.checkTokenUser();
 
-        Optional<LocationData> optLd = locationDataService.findById(request.getLdId());
+        Optional<LocationData> optLd = locationDataService.findById(locationId);
         if (optLd.isEmpty()){
             throw LocationException.locationUpdateFail();
         }
@@ -85,6 +88,30 @@ public class ImageDataBusiness {
 
         return imageDataService.createImageLocation(pathLocationUrl, imgName, ldRes);
     }
+
+    ///
+    public String uploadImageChatRoom(MultipartFile file, String chatRoomId) throws BaseException {
+        if (!tokenService.checkAdmin()){
+            throw UserException.accessDenied();
+        }
+        UserProfile resToken = tokenService.checkTokenUser();
+
+        Optional<ChatRoom> optLd = chatRoomService.findById(chatRoomId);
+        if (optLd.isEmpty()){
+            throw ChatException.updateFail();
+        }
+        ChatRoom crRes = optLd.get();
+
+        String pathSet = FilesUtil.pathSet;
+        String pathChatRoomUrl = FilesUtil.imageChatRoomUrl;
+        String crId = crRes.getCrId();
+        String dir = pathSet + pathChatRoomUrl;
+
+        String imgName = manageImage(crId, dir, file);
+
+        return imageDataService.createImageChatRoom(pathChatRoomUrl, imgName, crRes);
+    }
+
 
     ///
     public String manageImage(String id, String dir, MultipartFile file) throws BaseException{

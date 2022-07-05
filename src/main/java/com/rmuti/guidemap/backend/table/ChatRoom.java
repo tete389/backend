@@ -21,8 +21,11 @@ public class ChatRoom {
     @Column(name = "cr_name", unique = true, nullable = false, length = 60)
     private String crName;
 
+    @Column(name = "cr_image")
+    private String crImage;
+
     @Column(name = "cr_location_id")
-    private String locationId;
+    private String crLocationId;
 
 //    @Column(name = "cr_userProfile")
 //    private List<String> userProfile = new ArrayList<>();

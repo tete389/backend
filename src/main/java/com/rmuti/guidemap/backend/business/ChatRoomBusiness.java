@@ -3,6 +3,7 @@ package com.rmuti.guidemap.backend.business;
 
 import com.rmuti.guidemap.backend.exception.BaseException;
 import com.rmuti.guidemap.backend.exception.ChatException;
+import com.rmuti.guidemap.backend.exception.LocationException;
 import com.rmuti.guidemap.backend.exception.UserException;
 //import com.rmuti.guidemap.backend.models.MChatRoomCreateRequest;
 import com.rmuti.guidemap.backend.models.MChatRoomRequest;
@@ -23,6 +24,8 @@ public class ChatRoomBusiness {
 
     private final ChatRoomService chatRoomService;
 
+    private final ChatMessageBusiness chatMessageBusiness;
+
     private final TokenService tokenService;
 
     ///
@@ -37,21 +40,10 @@ public class ChatRoomBusiness {
     }
 
     ///
-    public ChatRoom getChatRoomByName(String chatRoomName) throws BaseException{
+    public MChatRoomResponse getChatRoomsByLocationId(List<MChatRoomRequest> locationId) throws BaseException{
         UserProfile resToken = tokenService.checkTokenUser();
 
-        Optional<ChatRoom> ChatRoomData = chatRoomService.findByName(chatRoomName);
-        if(ChatRoomData.isEmpty()){
-            throw ChatException.ChatRoomFailDataNull();
-        }
-        return ChatRoomData.get();
-    }
-
-    ///
-    public MChatRoomResponse getChatRoomsByLocationId(String locationId) throws BaseException{
-        UserProfile resToken = tokenService.checkTokenUser();
-
-        MChatRoomResponse ChatRoomData = chatRoomService.findByLocationId(locationId);
+        MChatRoomResponse ChatRoomData = chatRoomService.findAllByLocationId(locationId);
         if(ChatRoomData == null){
             throw ChatException.ChatRoomFailDataNull();
         }
@@ -68,7 +60,7 @@ public class ChatRoomBusiness {
 
         ChatRoom create = chatRoomService.createChatRoom(
                 request.getCrName(),
-                request.getLocationId()
+                request.getCrLocationId()
         );
         Optional<ChatRoom> opt = chatRoomService.findByName(create.getCrName());
         if(opt.isEmpty()){
@@ -88,24 +80,30 @@ public class ChatRoomBusiness {
         ChatRoom update = chatRoomService.updateChatRoom(
                 request.getCrId(),
                 request.getCrName(),
-                request.getLocationId()
+                request.getCrLocationId()
         );
 
-        if (!request.getCrName().equals(update.getCrName())){
+        if (!request.getCrId().equals(update.getCrId())){
             throw ChatException.updateFail();
         }
         return  "update chat.room compiled";
     }
 
     ///
-    public String delChatRoomByName(MChatRoomRequest name) throws BaseException{
+    public String delChatRoomById(String chatRoomId) throws BaseException{
         if (!tokenService.checkAdmin()){
             throw UserException.accessDenied();
         }
         UserProfile resToken = tokenService.checkTokenUser();
+        Optional<ChatRoom> findById = chatRoomService.findById(chatRoomId);
+        if(findById.isEmpty()){
+            throw ChatException.deleteFail();
+        }
+        ChatRoom chatRoom = findById.get();
 
+        chatMessageBusiness.deleteChatMessageByChatRoom(chatRoom.getCrId());
 
-        String messageDeleted = chatRoomService.deleteChatRoomByName(name.getCrName());
+        String messageDeleted = chatRoomService.deleteChatRoomById(chatRoom.getCrId());
         if(messageDeleted.isEmpty()){
             throw ChatException.deleteFail();
         }
@@ -113,33 +111,28 @@ public class ChatRoomBusiness {
     }
 
     ///
-    public String delChatRoomById(String id) throws BaseException{
+    public String delChatRoomByLocation(String locationId) throws BaseException{
         if (!tokenService.checkAdmin()){
             throw UserException.accessDenied();
         }
         UserProfile resToken = tokenService.checkTokenUser();
 
+        List<ChatRoom> findByLocationId = chatRoomService.findAllChatRoomByLocation(locationId);
+        if (findByLocationId.isEmpty()){
+            throw LocationException.locationFailDataNull();
+        }
 
-        String messageDeleted = chatRoomService.deleteChatRoomById(id);
+        for (ChatRoom chatRoom : findByLocationId) {
+            chatMessageBusiness.deleteChatMessageByChatRoom(chatRoom.getCrId());
+        }
+
+        String messageDeleted = chatRoomService.deleteAllChatRoomByLocation(locationId);
         if(messageDeleted.isEmpty()){
             throw ChatException.deleteFail();
         }
         return messageDeleted;
     }
 
-    ///
-    public String delChatRoomByLocation(MChatRoomRequest location) throws BaseException{
-        if (!tokenService.checkAdmin()){
-            throw UserException.accessDenied();
-        }
-        UserProfile resToken = tokenService.checkTokenUser();
 
-
-        String messageDeleted = chatRoomService.deleteAllChatRoomByLocation(location.getLocationId());
-        if(messageDeleted.isEmpty()){
-            throw ChatException.deleteFail();
-        }
-        return messageDeleted;
-    }
 
 }

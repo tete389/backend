@@ -11,7 +11,6 @@ import com.rmuti.guidemap.backend.table.UserProfile;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @AllArgsConstructor
@@ -20,8 +19,11 @@ public class LocationDataBusiness {
 
     private final LocationDataService locationService;
 
+    private final ChatRoomBusiness chatRoomBusiness;
+
     private final TokenService tokenService;
 
+    ///
     public String createLocation(LocationData request) throws BaseException {
         if (!tokenService.checkAdmin()){
             throw UserException.accessDenied();
@@ -54,6 +56,7 @@ public class LocationDataBusiness {
         return locationData;
     }
 
+    ///
     public String updateLocation(LocationData request) throws BaseException{
         if (!tokenService.checkAdmin()){
             throw UserException.accessDenied();
@@ -69,11 +72,34 @@ public class LocationDataBusiness {
                 request.getLdImage(),
                 request.getLdDetail()
         );
-        if(!res.equals(request)){
-            throw LocationException.locationUpdateFail();
-        }
+
         return "location updated";
     }
 
+    ///
+    public String deleteLocation(String locationId) throws BaseException{
+        if (!tokenService.checkAdmin()){
+            throw UserException.accessDenied();
+        }
+        UserProfile resToken = tokenService.checkTokenUser();
 
+
+        Optional<LocationData> findById = locationService.findById(locationId);
+        if (findById.isEmpty()){
+            throw LocationException.locationFailDataNull();
+        }
+        LocationData location = findById.get();
+
+
+        String messageDeletedChatRoom = chatRoomBusiness.delChatRoomByLocation(location.getLdId());
+        if(messageDeletedChatRoom.isEmpty()){
+            throw LocationException.locationDeleteFail();
+        }
+        String messageDeletedLocation = locationService.deleteLocationById(locationId);
+        if(messageDeletedLocation.isEmpty()){
+            throw LocationException.locationDeleteFail();
+        }
+
+        return "location deleted!";
+    }
 }

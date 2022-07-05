@@ -4,14 +4,8 @@ import com.rmuti.guidemap.backend.exception.BaseException;
 import com.rmuti.guidemap.backend.exception.ChatException;
 import com.rmuti.guidemap.backend.exception.FileException;
 import com.rmuti.guidemap.backend.exception.LocationException;
-import com.rmuti.guidemap.backend.repository.ChatMessageRepository;
-import com.rmuti.guidemap.backend.repository.ImageDataRepository;
-import com.rmuti.guidemap.backend.repository.LocationDataRepository;
-import com.rmuti.guidemap.backend.repository.UserProfileRepository;
-import com.rmuti.guidemap.backend.table.ChatMessage;
-import com.rmuti.guidemap.backend.table.ImageData;
-import com.rmuti.guidemap.backend.table.LocationData;
-import com.rmuti.guidemap.backend.table.UserProfile;
+import com.rmuti.guidemap.backend.repository.*;
+import com.rmuti.guidemap.backend.table.*;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -28,16 +22,18 @@ public class ImageDataService {
 
     private final ChatMessageRepository chatMessageRepository;
 
+    private final ChatRoomRepository chatRoomRepository;
+
     private final LocationDataRepository locationDataRepository;
 
 
-    //
+    ///
     public Optional<ImageData> findById(String id) {
         return imageDataRepository.findById(id);
     }
 
 
-    //
+    ///
     public String createImageUserProfile(String path, String imgName, UserProfile userProfile) throws BaseException {
         /// validate
         if (Objects.isNull(path)) {
@@ -71,6 +67,41 @@ public class ImageDataService {
      return "update userProfile Image complied";
     }
 
+    ///
+    public String createImageChatRoom(String path, String imgName, ChatRoom chatRoom) throws BaseException {
+        /// validate
+        if (Objects.isNull(path)) {
+            throw FileException.fileNull();
+        }
+        if (Objects.isNull(imgName)) {
+            throw FileException.fileNull();
+        }
+        if (Objects.isNull(chatRoom)) {
+            throw FileException.fileNull();
+        }
+
+        //update
+        ImageData imageData = new ImageData();
+        imageData.setImgPath(path);
+        imageData.setImgName(imgName);
+        imageDataRepository.save(imageData);
+
+        chatRoom.setCrImage(imgName);
+        chatRoomRepository.save(chatRoom);
+
+        /// check after update
+        Optional<ChatRoom> optCr = chatRoomRepository.findById(chatRoom.getCrId());
+        if(optCr.isEmpty()){
+            throw ChatException.updateFail();
+        }
+        Optional<ImageData> optImg = imageDataRepository.findById(imageData.getImgId());
+        if(optImg.isEmpty()){
+            throw ChatException.updateFail();
+        }
+        return "update ChatRoom Image complied";
+    }
+
+    ///
     public String createImageLocation(String path, String imgName, LocationData locationData) throws BaseException {
         /// validate
         if (Objects.isNull(path)) {
@@ -105,6 +136,7 @@ public class ImageDataService {
     }
 
 
+    ///
     public String createImageChatMessage(String sender, String receiver, String imgName ,String path) throws BaseException {
         /// validate
         if (Objects.isNull(sender)) {
@@ -127,8 +159,8 @@ public class ImageDataService {
         imageDataRepository.save(imageData);
 
         ChatMessage entity = new ChatMessage();
-        entity.setUserProfileId(sender);
-        entity.setChatRoomId(receiver);
+        entity.setCmUserProfileId(sender);
+        entity.setCmChatRoomId(receiver);
         entity.setCmMessage("non");
         entity.setCmStatus(true);
         entity.setCmTypeMessage("image");

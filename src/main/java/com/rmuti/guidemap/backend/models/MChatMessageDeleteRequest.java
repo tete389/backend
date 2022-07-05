@@ -5,10 +5,10 @@ import lombok.Data;
 @Data
 public class MChatMessageDeleteRequest {
 
-    private String id;
+    private String cmId;
 
-    private String created;
+    private String cmCreated;
 
-    private String receiver;
+    private String cmReceiver;
 
 }

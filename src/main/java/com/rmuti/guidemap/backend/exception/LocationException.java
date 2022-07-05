@@ -15,6 +15,10 @@ public class LocationException extends BaseException{
         return new LocationException("location.fail.create");
     }
 
+    public static LocationException locationDeleteFail() {
+        return new LocationException("location.fail.delete");
+    }
+
     public static LocationException locationUpdateFail() {
         return new LocationException("location.fail.update");
     }

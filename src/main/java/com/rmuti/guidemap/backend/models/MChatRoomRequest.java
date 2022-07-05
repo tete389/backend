@@ -9,6 +9,6 @@ public class MChatRoomRequest {
 
     private String crName;
 
-    private String locationId;
+    private String crLocationId;
 
 }

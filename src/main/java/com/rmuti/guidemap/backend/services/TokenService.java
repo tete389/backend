@@ -38,7 +38,7 @@ public class TokenService {
     public String tokenize(String userProfile){
 
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.MINUTE,60);
+        calendar.add(Calendar.YEAR,1);
         Date expiresAt = calendar.getTime();
 
         if (userProfile.equals("Admin")){

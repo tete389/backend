@@ -7,8 +7,8 @@ import java.util.Date;
 @Data
 public class MChatMessageRequest {
 
-    private String receiver;
+    private String cmReceiver;
 
-    private String message;
+    private String cmMessage;
 
 }

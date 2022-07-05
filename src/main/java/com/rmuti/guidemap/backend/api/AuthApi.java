@@ -5,7 +5,6 @@ import com.rmuti.guidemap.backend.exception.BaseException;
 import com.rmuti.guidemap.backend.models.MAuthResponse;
 import com.rmuti.guidemap.backend.models.MLoginRequest;
 import com.rmuti.guidemap.backend.models.MRegisterRequest;
-import com.rmuti.guidemap.backend.util.SecurityUtil;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,6 +32,7 @@ public class AuthApi {
         MAuthResponse loginResponse = authBusiness.login(request);
         return ResponseEntity.ok(loginResponse);
     }
+
 
     @PostMapping("/loginGoogle")
     public ResponseEntity<MAuthResponse> loginGoogle(@RequestBody MLoginRequest request) throws BaseException {

@@ -1,6 +1,6 @@
 package com.rmuti.guidemap.backend.config;
 
-import com.rmuti.guidemap.backend.config.token.TokenFilterConfiguerer;
+import com.rmuti.guidemap.backend.config.token.TokenFilterConfigurer;
 import com.rmuti.guidemap.backend.services.TokenService;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -23,8 +23,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final String[] PUBIC = {
             "/auth/login",
             "/auth/register",
-            "/auth/test",
-            "/socket/*",
             "/upload/**"
     };
 
@@ -43,7 +41,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.cors().disable().csrf().disable().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeRequests()
                 .antMatchers(PUBIC).anonymous().anyRequest().authenticated()
-                .and().apply(new TokenFilterConfiguerer(tokenService));
+                .and().apply(new TokenFilterConfigurer(tokenService));
     }
 
 }

@@ -2,6 +2,7 @@ package com.rmuti.guidemap.backend.business;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.rmuti.guidemap.backend.exception.BaseException;
 
 import org.springframework.http.HttpStatus;
@@ -16,7 +17,7 @@ import lombok.Data;
 public class ErrorAdviser {
 
     @ExceptionHandler(BaseException.class)
-    public ResponseEntity<ErrorResponse> HandlerException(BaseException e) {
+    public ResponseEntity<ErrorResponse> handlerException(BaseException e) {
         ErrorResponse response = new ErrorResponse();
         response.setError(e.getMessage());
         response.setStatus(HttpStatus.EXPECTATION_FAILED.value());
@@ -26,7 +27,8 @@ public class ErrorAdviser {
     
     @Data
     public static class ErrorResponse {
-        
+
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
         private LocalDateTime timestamp = LocalDateTime.now();
 
         private int status;

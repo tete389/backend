@@ -10,10 +10,7 @@ import java.util.List;
 
 public interface ChatMessageRepository extends JpaRepository<ChatMessage, String> {
 
-    @Query(value = "SELECT * FROM chat_message WHERE cm_receiver = :chat_Room_name ORDER BY created ASC", nativeQuery = true)
-    List<ChatMessage> findByChatRoomNameOrderByCmCreatedASC(@Param("chat_Room_name") String nameRoom);
-
-    List<ChatMessage> findByChatRoomIdOrderByCmCreatedAsc(String id);
+    List<ChatMessage> findByCmChatRoomIdOrderByCmCreatedAsc(String id);
 
     @Query(value = "SELECT cm.*, up.up_name, up.up_status, up.up_image FROM " +
             "chat_message cm JOIN user_profile up ON cm.cm_user_profile_id = up.up_id " +
@@ -23,7 +20,6 @@ public interface ChatMessageRepository extends JpaRepository<ChatMessage, String
 
     public static interface ChatMessageResponse{
         String getCm_Id();
-
 
         String getCm_Created();
 
